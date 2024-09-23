@@ -1,4 +1,10 @@
-import { Body, ConflictException, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Post,
+  UsePipes,
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiConflictResponse,
@@ -6,7 +12,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { createZodDto } from 'nestjs-zod';
+import { createZodDto, ZodValidationPipe } from 'nestjs-zod';
 import { z } from 'zod';
 import { hash } from 'bcryptjs';
 
@@ -25,6 +31,7 @@ export class CreateAccountController {
 
   @ApiBody({ type: CreateAccountDto })
   @Post()
+  @UsePipes(new ZodValidationPipe(createAccountBodySchema))
   @ApiCreatedResponse({
     description: 'User created successfully',
   })
@@ -32,7 +39,7 @@ export class CreateAccountController {
     description: 'User with the same e-mail already exists',
   })
   async handle(@Body() body: CreateAccountDto) {
-    const { name, email, password } = createAccountBodySchema.parse(body);
+    const { name, email, password } = body;
 
     const hasOtherUserSameEmail = await this.prisma.user.findUnique({
       where: { email },
