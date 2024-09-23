@@ -3,6 +3,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { CreateAccountController } from './controllers/accounts/create-account.controller';
 import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './env';
+import { authModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { envSchema } from './env';
       validate: (env) => envSchema.parse(env),
       isGlobal: true,
     }),
+    authModule,
   ],
   controllers: [CreateAccountController],
   providers: [PrismaService],
