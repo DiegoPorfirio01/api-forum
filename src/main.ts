@@ -15,6 +15,15 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('API FORUM')
     .setDescription('Open API for forum')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+      name: 'Authorization',
+      description: 'Enter your Bearer token',
+    })
+    .addSecurityRequirements('bearer')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
